@@ -1,7 +1,10 @@
 package com.example.recipe.presentation.ui.recipe_list
 
 
+import android.content.ContentValues.TAG
+import android.nfc.Tag
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,17 +30,17 @@ class RecipeListFragment: Fragment() {
     val viewModel: RecipeListViewModel by viewModels()
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        println("Fragment: ${viewModel.getRepo()}")
-        println("Fragment: ${viewModel.getToken()}")
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val recipes = viewModel.recipes.value
+
+        for(recipe in recipes){
+            Log.d(TAG, "onCreateView: ${recipe.title}")
+        }
 
         return ComposeView(requireContext()).apply {
             setContent {
