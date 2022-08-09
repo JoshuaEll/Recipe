@@ -25,16 +25,16 @@ constructor(
     //mutable state for the user query to stop losing the input of the user
     val query = mutableStateOf("")
     init {
-        newSearch()
+        newSearch("Chicken")
     }
 
     //will be changed later to allow user searching
-    fun newSearch(){
+    fun newSearch(query: String){
         viewModelScope.launch {
             val result = repository.search(
                 token = token,
                 page = 1,
-                query = "chicken",
+                query = query,
             )
             recipes.value = result
         }
