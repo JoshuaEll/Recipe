@@ -1,5 +1,6 @@
 package com.example.recipe.presentation.components
 
+import android.media.Image
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,8 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.widget.Placeholder
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.recipe.R
 import com.example.recipe.domain.model.Recipe
 
@@ -32,11 +37,14 @@ fun RecipeCard(
     ) {
         Column{
             recipe.featuredImage?.let { url ->
-                Image(painter = painterResource(id = R.drawable.empty_plate), contentDescription = "", modifier = Modifier
-                    .fillMaxWidth()
-                    .height(225.dp),
-                      contentScale = ContentScale.Crop
-                )
+                AsyncImage(model = ImageRequest.Builder(LocalContext.current).data(url).build(),
+                          placeholder = painterResource(R.drawable.empty_plate),
+                          contentDescription = null,
+                          modifier = Modifier.fillMaxWidth().height(225.dp),
+                          contentScale = ContentScale.Crop
+
+                          )
+
             }
             recipe.title?.let { title ->
                 Row(
@@ -53,7 +61,10 @@ fun RecipeCard(
                     )
                     Text(
                         text = recipe.rating.toString(),
-                        modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.End).align(Alignment.CenterVertically),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.End)
+                            .align(Alignment.CenterVertically),
                         style = MaterialTheme.typography.h6
                         )
                 }
