@@ -111,4 +111,8 @@ dependencies {
     implementation "androidx.hilt:hilt-work:$hilt_lifecyle"
     // When using Kotlin.
     kapt "androidx.hilt:hilt-compiler:$hilt_lifecyle"
+
+    //COIL implementation
+    def coil_version = "2.1.0"
+    implementation "io.coil-kt:coil-compose:$coil_version"
 }
