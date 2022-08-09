@@ -44,55 +44,56 @@ class RecipeListFragment: Fragment() {
                 val query = viewModel.query.value
                 val keyboardController = LocalSoftwareKeyboardController.current
                 Column{
+                    //using surface composable to give the search bar an elevation
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         color = MaterialTheme.colors.primary,
                         elevation = 8.dp,
                     ){
-                        Column() {
-                            Row{
-                                //text field to let user enter stuff
-                                TextField(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.9f)
-                                        .padding(8.dp),
-                                    value = query,
-                                    onValueChange = {
-                                        viewModel.onQueryChanged(it)
-                                    },
-                                    label = {
-                                        Text(text = "Search")
-                                    },
-                                    keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Search
-                                    ),
-                                    leadingIcon = {
-                                        Icon(imageVector = Icons.Filled.Search, contentDescription = "")
-                                    },
-                                    keyboardActions = KeyboardActions(onSearch = {
-                                        viewModel.newSearch(query)
-                                        keyboardController?.hide()
-                                    }),
-                                    textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
-                                    colors = TextFieldDefaults.textFieldColors(
-                                        backgroundColor = MaterialTheme.colors.surface
-                                    )
+                        Row{
+                            //text field to let user enter stuff
+                            TextField(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.9f)
+                                    .padding(8.dp),
+                                value = query,
+                                onValueChange = {
+                                    viewModel.onQueryChanged(it)
+                                },
+                                label = {
+                                    Text(text = "Search")
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Text,
+                                    imeAction = ImeAction.Search
+                                ),
+                                leadingIcon = {
+                                    Icon(imageVector = Icons.Filled.Search, contentDescription = "")
+                                },
+                                keyboardActions = KeyboardActions(onSearch = {
+                                    viewModel.newSearch(query)
+                                    keyboardController?.hide()
+                                }),
+                                textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
+                                colors = TextFieldDefaults.textFieldColors(
+                                    backgroundColor = MaterialTheme.colors.surface
                                 )
-                            }
-                            LazyColumn{
-                                itemsIndexed(
-                                    items = recipes
-                                ){ index, recipe ->
-                                    RecipeCard(recipe = recipe, onClick = {})
-                                }
-                            }
+                            )
+                        }
+
+                    }
+                    //LazyColumn outside of surface, so that it does not get the background color
+                    LazyColumn{
+                        itemsIndexed(
+                            items = recipes
+                        ){ index, recipe ->
+                            RecipeCard(recipe = recipe, onClick = {})
                         }
                     }
-
                 }
 
-                }
+
             }
         }
+    }
 }
