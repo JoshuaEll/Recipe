@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
-
+// Create an observable model for the Recipe list
 @HiltViewModel
 class RecipeListViewModel
 @Inject
@@ -23,6 +23,11 @@ constructor(
     val recipes: MutableState<List<Recipe>> = mutableStateOf(ArrayList())
 
     init {
+        newSearch()
+    }
+
+    //will be changed later to allow user searching
+    fun newSearch(){
         viewModelScope.launch {
             val result = repository.search(
                 token = token,
