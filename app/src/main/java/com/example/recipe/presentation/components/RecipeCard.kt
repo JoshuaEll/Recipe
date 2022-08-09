@@ -1,7 +1,5 @@
 package com.example.recipe.presentation.components
 
-import android.media.Image
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
@@ -14,7 +12,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.widget.Placeholder
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.recipe.R
@@ -36,7 +33,9 @@ fun RecipeCard(
         elevation = 8.dp,
     ) {
         Column{
+            // get the image check for null value
             recipe.featuredImage?.let { url ->
+                // using Coils asyncimage function load the image belonging to the url
                 AsyncImage(model = ImageRequest.Builder(LocalContext.current).data(url).build(),
                           placeholder = painterResource(R.drawable.empty_plate),
                           contentDescription = null,
