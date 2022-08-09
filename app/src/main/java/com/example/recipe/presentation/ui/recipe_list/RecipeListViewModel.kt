@@ -22,6 +22,8 @@ constructor(
 
     val recipes: MutableState<List<Recipe>> = mutableStateOf(ArrayList())
 
+    //mutable state for the user query to stop losing the input of the user
+    val query = mutableStateOf("")
     init {
         newSearch()
     }
@@ -36,6 +38,12 @@ constructor(
             )
             recipes.value = result
         }
+    }
+
+    // changes the default value displayed to the one the user typed
+    // prevents loss of user input after screen rotation
+    fun onQueryChanged(query: String){
+        this.query.value =  query
     }
 
 }
