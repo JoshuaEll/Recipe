@@ -87,6 +87,7 @@ class RecipeListFragment: Fragment() {
                                     },
                                     keyboardActions = KeyboardActions(onSearch = {
                                         viewModel.newSearch()
+                                        //IMEActions didn't work
                                         keyboardController?.hide()
                                     }),
                                     textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
