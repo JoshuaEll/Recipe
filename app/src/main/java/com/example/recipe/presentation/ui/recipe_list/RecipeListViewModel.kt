@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.recipe.domain.model.Recipe
 import com.example.recipe.repository.RecipeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -27,22 +28,40 @@ constructor(
     val query = mutableStateOf("")
     val selectedCategory: MutableState<FoodCategory?> = mutableStateOf(null)
     var categoryScrollPosition: Int = 0
+    val loading = mutableStateOf(false)
 
     init {
         newSearch()
     }
 
-    //will be changed later to allow user searching
     fun newSearch(){
         viewModelScope.launch {
+            loading.value = true
+            resetSearchState()
+            delay(2000)
             val result = repository.search(
                 token = token,
                 page = 1,
                 query = query.value,
             )
             recipes.value = result
+            loading.value = false
         }
     }
+
+    // deselects the selected category
+    private fun clearSelectedCategory(){
+        selectedCategory.value = null
+    }
+
+    // clears the list and if the search bar value does not equal the selected chip clear the chip
+    // this function also makes it so, that if a new category was chosen the user does not have to scroll all the way back up
+    private fun resetSearchState(){
+        recipes.value = listOf()
+        if(selectedCategory.value?.value != query.value)
+            clearSelectedCategory()
+    }
+
 
     // changes the default value displayed to the one the user typed
     // prevents loss of user input after screen rotation
