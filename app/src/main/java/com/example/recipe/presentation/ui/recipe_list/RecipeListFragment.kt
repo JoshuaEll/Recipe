@@ -73,6 +73,7 @@ class RecipeListFragment: Fragment() {
                         onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
                         onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition
                     )
+                    // box holding shimmer loading, lazy column and circular loading bar
                     Box(
                         modifier = Modifier.fillMaxSize()
                     ){
@@ -89,7 +90,6 @@ class RecipeListFragment: Fragment() {
                                 }
                             }
                         }
-                        //LazyColumn outside of surface, so that it does not get the background color
 
                         CircularIndeterminateProgressBar(isDisplayed = loading)
                     }
@@ -101,28 +101,5 @@ class RecipeListFragment: Fragment() {
 
             }
         }
-    }
-}
-
-
-
-@Composable
-fun GradientDemo(){
-    val colors = listOf(
-        Color.Blue,
-        Color.Red,
-        Color.Blue
-    )
-    val brush = linearGradient(
-        colors,
-        start = Offset(200f, 200f),
-        end = Offset(400f, 400f)
-    )
-    Surface(shape = MaterialTheme.shapes.small) {
-        Spacer(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(brush = brush)
-        )
     }
 }
