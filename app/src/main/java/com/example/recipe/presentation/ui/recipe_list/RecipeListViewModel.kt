@@ -2,6 +2,8 @@ package com.example.recipe.presentation.ui.recipe_list
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.toUpperCase
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -58,8 +60,15 @@ constructor(
     // this function also makes it so, that if a new category was chosen the user does not have to scroll all the way back up
     private fun resetSearchState(){
         recipes.value = listOf()
-        if(selectedCategory.value?.value != query.value)
+        // checks if the selected category does not matche the query value
+        if(selectedCategory.value?.value != query.value && query.value == null) {
             clearSelectedCategory()
+        }
+        else if(selectedCategory.value?.value != query.value && query.value != null){
+            clearSelectedCategory()
+            val newCategory = getFoodCategory(query.value.replaceFirstChar { it.uppercase() })
+            selectedCategory.value = newCategory
+        }
     }
 
 
@@ -71,7 +80,7 @@ constructor(
 
     // changes the query to whatever chip was clicked
     fun onSelectedCategoryChanged(category: String){
-        val newCategory = getFoodCategory(category)
+        val newCategory = getFoodCategory(category.replaceFirstChar { it.uppercase() })
         selectedCategory.value = newCategory
         onQueryChanged(category)
     }
