@@ -31,6 +31,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.recipe.presentation.components.FoodCategoryChip
 import com.example.recipe.presentation.components.RecipeCard
+import com.example.recipe.presentation.components.SearchAppBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
@@ -52,74 +53,20 @@ class RecipeListFragment: Fragment() {
             setContent {
                 val recipes = viewModel.recipes.value
                 val query = viewModel.query.value
-                val keyboardController = LocalSoftwareKeyboardController.current
+
                 val selectedCategory = viewModel.selectedCategory.value
-                // since ScrollableRow does not work I have to work around it
-                val scrollStatus = rememberScrollState()
-                val coroutineScope = rememberCoroutineScope()
+
                 Column{
                     //using surface composable to give the search bar an elevation
-                    Surface(
-                        modifier = Modifier.fillMaxWidth(),
-                        color = Color.White,
-                        elevation = 8.dp,
-                    ){
-                        Column {
-                            Row{
-                                //text field to let user enter stuff
-                                TextField(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.9f)
-                                        .padding(8.dp),
-                                    value = query,
-                                    onValueChange = {
-                                        viewModel.onQueryChanged(it)
-                                    },
-                                    label = {
-                                        Text(text = "Search")
-                                    },
-                                    keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Search
-                                    ),
-                                    leadingIcon = {
-                                        Icon(imageVector = Icons.Filled.Search, contentDescription = "")
-                                    },
-                                    keyboardActions = KeyboardActions(onSearch = {
-                                        viewModel.newSearch()
-                                        //IMEActions didn't work
-                                        keyboardController?.hide()
-                                    }),
-                                    textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
-                                    colors = TextFieldDefaults.textFieldColors(
-                                        backgroundColor = MaterialTheme.colors.surface
-                                    )
-                                )
-                            }
-
-                            // ScrollableRow does not exist anymore, so I just use a regular row with scrolling turned on
-                            Row(modifier = Modifier
-                                .horizontalScroll(scrollStatus)
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, bottom = 8.dp)){
-                                coroutineScope.launch {
-                                    scrollStatus.scrollTo(viewModel.categoryScrollPosition)
-                                }
-                                for(category in getAllFoodCategories()){
-                                    // implement the chip
-                                    FoodCategoryChip(
-                                        category = category.value,
-                                        isSelected =  selectedCategory == category,
-                                        onSelectedCategoryChanged = {
-                                          viewModel.onSelectedCategoryChanged(it)
-                                            viewModel.onChangeCategoryScrollPosition(scrollStatus.value)
-                                        },
-                                        onExecuteSearch = viewModel::newSearch
-                                    )
-                                }
-                            }
-                        }
-                    }
+                    SearchAppBar(
+                        query = query,
+                        onQueryChanged = viewModel::onQueryChanged,
+                        onExecuteSearch = viewModel::newSearch,
+                        scrollPosition = viewModel.categoryScrollPosition,
+                        selectedCategory = selectedCategory,
+                        onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
+                        onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition
+                    )
 
                     //LazyColumn outside of surface, so that it does not get the background color
                     LazyColumn{
