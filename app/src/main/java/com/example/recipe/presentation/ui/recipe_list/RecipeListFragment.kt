@@ -35,16 +35,22 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.recipe.presentation.BaseApplication
 import com.example.recipe.presentation.components.*
 import com.example.recipe.presentation.components.HeartAnimationDefinition.HeartButtonState.*
+import com.example.recipe.presentation.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
+import javax.inject.Inject
 
 
 // displays the list gotten from the viewModel using LazyColumn
 @AndroidEntryPoint
 class RecipeListFragment: Fragment() {
+    @Inject
+    lateinit var application: BaseApplication
+
     val viewModel: RecipeListViewModel by viewModels()
 
     @SuppressLint("CoroutineCreationDuringComposition")
@@ -56,47 +62,55 @@ class RecipeListFragment: Fragment() {
     ): View? {
         return ComposeView(requireContext()).apply {
             setContent {
-                val recipes = viewModel.recipes.value
-                val query = viewModel.query.value
+                AppTheme(darkTheme = application.isDark.value
+                ) {
+                    val recipes = viewModel.recipes.value
+                    val query = viewModel.query.value
 
-                val selectedCategory = viewModel.selectedCategory.value
-                val loading = viewModel.loading.value
+                    val selectedCategory = viewModel.selectedCategory.value
+                    val loading = viewModel.loading.value
 
-                Column{
-                    //using surface composable to give the search bar an elevation
-                    SearchAppBar(
-                        query = query,
-                        onQueryChanged = viewModel::onQueryChanged,
-                        onExecuteSearch = viewModel::newSearch,
-                        scrollPosition = viewModel.categoryScrollPosition,
-                        selectedCategory = selectedCategory,
-                        onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
-                        onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition
-                    )
-                    // box holding shimmer loading, lazy column and circular loading bar
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ){
-                        if(loading){
-                            loadingRecipeListShimmer(imageHeight = 250.dp)
-                        }
-                        else
-                        {
-                            LazyColumn{
-                                itemsIndexed(
-                                    items = recipes
-                                ){ index, recipe ->
-                                    RecipeCard(recipe = recipe, onClick = {})
+                    Column{
+                        //using surface composable to give the search bar an elevation
+                        SearchAppBar(
+                            query = query,
+                            onQueryChanged = viewModel::onQueryChanged,
+                            onExecuteSearch = viewModel::newSearch,
+                            scrollPosition = viewModel.categoryScrollPosition,
+                            selectedCategory = selectedCategory,
+                            onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
+                            onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition,
+                            onToggleTheme = {
+                                application.toggleLightTheme()
+                            }
+                        )
+                        // box holding shimmer loading, lazy column and circular loading bar
+                        Box(
+                            modifier = Modifier.fillMaxSize()
+                                .background(color = MaterialTheme.colors.background)
+                        ){
+                            if(loading){
+                                loadingRecipeListShimmer(imageHeight = 250.dp)
+                            }
+                            else
+                            {
+                                LazyColumn{
+                                    itemsIndexed(
+                                        items = recipes
+                                    ){ index, recipe ->
+                                        RecipeCard(recipe = recipe, onClick = {})
+                                    }
                                 }
                             }
+
+                            CircularIndeterminateProgressBar(isDisplayed = loading)
                         }
 
-                        CircularIndeterminateProgressBar(isDisplayed = loading)
+
+
                     }
-
-
-
                 }
+
 
 
             }

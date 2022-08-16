@@ -11,9 +11,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,6 +24,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.recipe.presentation.ui.recipe_list.FoodCategory
 import com.example.recipe.presentation.ui.recipe_list.getAllFoodCategories
 import kotlinx.coroutines.launch
@@ -37,6 +40,7 @@ fun SearchAppBar(
     selectedCategory: FoodCategory?,
     onSelectedCategoryChanged: (String) -> Unit,
     onChangeCategoryScrollPosition: (Int) -> Unit,
+    onToggleTheme: () -> Unit,
 ){
     val keyboardController = LocalSoftwareKeyboardController.current
     // since ScrollableRow does not work I have to work around it
@@ -44,7 +48,7 @@ fun SearchAppBar(
     val coroutineScope = rememberCoroutineScope()
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = Color.White,
+        color = MaterialTheme.colors.surface,
         elevation = 8.dp,
     ){
         Column {
@@ -78,6 +82,21 @@ fun SearchAppBar(
                         backgroundColor = MaterialTheme.colors.surface
                     )
                 )
+                ConstraintLayout(
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                ) {
+                    val menu = createRef()
+                    IconButton(
+                        onClick = onToggleTheme,
+                        modifier = Modifier.constrainAs(menu){
+                            end.linkTo(parent.end)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        }
+                    ) {
+                        Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "")
+                    }
+                }
             }
 
             // ScrollableRow does not exist anymore, so I just use a regular row with scrolling turned on
