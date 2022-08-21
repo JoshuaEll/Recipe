@@ -44,7 +44,9 @@ fun AppTheme(
 ){
     //checks if the boolean is set to true or false and sets the themes accordingly
     MaterialTheme(
-        colors = if(darkTheme) DarkThemeColors else LightThemeColors
+        colors = if(darkTheme) DarkThemeColors else LightThemeColors,
+        typography = QuickSandTypography,
+        shapes = AppShapes
     ){
         content()
     }
