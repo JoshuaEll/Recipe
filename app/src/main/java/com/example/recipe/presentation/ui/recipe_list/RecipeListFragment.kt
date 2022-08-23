@@ -73,6 +73,8 @@ class RecipeListFragment: Fragment() {
 
                     val selectedCategory = viewModel.selectedCategory.value
                     val loading = viewModel.loading.value
+
+                    val page = viewModel.page.value
                     Scaffold(
                         topBar = {
                             //using surface composable to give the search bar an elevation
@@ -89,12 +91,6 @@ class RecipeListFragment: Fragment() {
                                 }
                             )
                         },
-                        bottomBar = {
-                            MyBottomBar()
-                        },
-                        drawerContent = {
-                            MyDrawer()
-                        },
 
                     ) {
                         // box holding shimmer loading, lazy column and circular loading bar
@@ -103,7 +99,7 @@ class RecipeListFragment: Fragment() {
                                 .fillMaxSize()
                                 .background(color = MaterialTheme.colors.surface)
                         ){
-                            if(loading){
+                            if(loading && recipes.isEmpty()){
                                 loadingRecipeListShimmer(imageHeight = 250.dp)
                             }
                             else
@@ -112,6 +108,10 @@ class RecipeListFragment: Fragment() {
                                     itemsIndexed(
                                         items = recipes
                                     ){ index, recipe ->
+                                        viewModel.onChangeRecipeScrollPostion(index)
+                                        if((index + 1 ) >= (page * PAGE_SIZE) && !loading){
+                                            viewModel.nextPage()
+                                        }
                                         RecipeCard(recipe = recipe, onClick = {})
                                     }
                                 }
