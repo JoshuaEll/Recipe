@@ -17,6 +17,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
 import com.example.recipe.presentation.BaseApplication
 import com.example.recipe.presentation.components.*
 import com.example.recipe.presentation.components.HeartAnimationDefinition.HeartButtonState.*
@@ -69,25 +73,35 @@ class RecipeListFragment: Fragment() {
 
                     val selectedCategory = viewModel.selectedCategory.value
                     val loading = viewModel.loading.value
+                    Scaffold(
+                        topBar = {
+                            //using surface composable to give the search bar an elevation
+                            SearchAppBar(
+                                query = query,
+                                onQueryChanged = viewModel::onQueryChanged,
+                                onExecuteSearch = viewModel::newSearch,
+                                scrollPosition = viewModel.categoryScrollPosition,
+                                selectedCategory = selectedCategory,
+                                onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
+                                onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition,
+                                onToggleTheme = {
+                                    application.toggleLightTheme()
+                                }
+                            )
+                        },
+                        bottomBar = {
+                            MyBottomBar()
+                        },
+                        drawerContent = {
+                            MyDrawer()
+                        },
 
-                    Column{
-                        //using surface composable to give the search bar an elevation
-                        SearchAppBar(
-                            query = query,
-                            onQueryChanged = viewModel::onQueryChanged,
-                            onExecuteSearch = viewModel::newSearch,
-                            scrollPosition = viewModel.categoryScrollPosition,
-                            selectedCategory = selectedCategory,
-                            onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
-                            onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition,
-                            onToggleTheme = {
-                                application.toggleLightTheme()
-                            }
-                        )
+                    ) {
                         // box holding shimmer loading, lazy column and circular loading bar
                         Box(
-                            modifier = Modifier.fillMaxSize()
-                                .background(color = MaterialTheme.colors.background)
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(color = MaterialTheme.colors.surface)
                         ){
                             if(loading){
                                 loadingRecipeListShimmer(imageHeight = 250.dp)
@@ -105,15 +119,68 @@ class RecipeListFragment: Fragment() {
 
                             CircularIndeterminateProgressBar(isDisplayed = loading)
                         }
-
-
-
                     }
+
                 }
 
 
 
             }
         }
+    }
+}
+//Example
+@Composable
+fun MyBottomBar(
+
+){
+    BottomNavigation(
+        elevation = 12.dp
+    ) {
+        BottomNavigationItem(icon = {
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                contentDescription = ""
+            )
+        },
+            selected = false,
+            onClick = {
+
+            }
+        )
+        BottomNavigationItem(icon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = ""
+            )
+        },
+            selected = true,
+            onClick = {
+
+            }
+        )
+        BottomNavigationItem(icon = {
+            Icon(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = ""
+            )
+        },
+            selected = false,
+            onClick = {
+
+            }
+        )
+    }
+
+}
+//Example
+@Composable
+fun MyDrawer(){
+    Column(){
+        Text("Item1")
+        Text("Item2")
+        Text("Item3")
+        Text("Item4")
+        Text("Item5")
     }
 }
