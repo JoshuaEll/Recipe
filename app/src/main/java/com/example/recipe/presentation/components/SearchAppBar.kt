@@ -77,7 +77,7 @@ fun SearchAppBar(
                         //IMEActions didn't work
                         keyboardController?.hide()
                     }),
-                    textStyle = MaterialTheme.typography.button,
+                    textStyle = MaterialTheme.typography.body1,
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = MaterialTheme.colors.surface
                     )

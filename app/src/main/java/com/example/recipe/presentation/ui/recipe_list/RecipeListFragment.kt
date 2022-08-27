@@ -81,7 +81,7 @@ class RecipeListFragment: Fragment() {
                             SearchAppBar(
                                 query = query,
                                 onQueryChanged = viewModel::onQueryChanged,
-                                onExecuteSearch = viewModel::newSearch,
+                                onExecuteSearch = {viewModel.onTriggerEvent(RecipeListEvent.NewSearchEvent)},
                                 scrollPosition = viewModel.categoryScrollPosition,
                                 selectedCategory = selectedCategory,
                                 onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
@@ -110,7 +110,7 @@ class RecipeListFragment: Fragment() {
                                     ){ index, recipe ->
                                         viewModel.onChangeRecipeScrollPostion(index)
                                         if((index + 1 ) >= (page * PAGE_SIZE) && !loading){
-                                            viewModel.nextPage()
+                                            viewModel.onTriggerEvent(RecipeListEvent.NextPageEvent)
                                         }
                                         RecipeCard(recipe = recipe, onClick = {})
                                     }

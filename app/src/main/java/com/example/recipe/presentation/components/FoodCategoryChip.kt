@@ -37,7 +37,7 @@ fun FoodCategoryChip(
         ){
             Text(
                 text = category,
-                style = MaterialTheme.typography.body2,
+                style = MaterialTheme.typography.button,
                 color = Color.White,
                 modifier = Modifier.padding(8.dp)
             )
