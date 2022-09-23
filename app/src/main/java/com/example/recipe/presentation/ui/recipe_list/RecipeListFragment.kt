@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import com.example.recipe.presentation.BaseApplication
 import com.example.recipe.presentation.components.*
 import com.example.recipe.presentation.components.HeartAnimationDefinition.HeartButtonState.*
@@ -93,32 +94,16 @@ class RecipeListFragment: Fragment() {
                         },
 
                     ) {
-                        // box holding shimmer loading, lazy column and circular loading bar
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(color = MaterialTheme.colors.surface)
-                        ){
-                            if(loading && recipes.isEmpty()){
-                                loadingRecipeListShimmer(imageHeight = 250.dp)
-                            }
-                            else
-                            {
-                                LazyColumn{
-                                    itemsIndexed(
-                                        items = recipes
-                                    ){ index, recipe ->
-                                        viewModel.onChangeRecipeScrollPostion(index)
-                                        if((index + 1 ) >= (page * PAGE_SIZE) && !loading){
-                                            viewModel.onTriggerEvent(RecipeListEvent.NextPageEvent)
-                                        }
-                                        RecipeCard(recipe = recipe, onClick = {})
-                                    }
-                                }
-                            }
-
-                            CircularIndeterminateProgressBar(isDisplayed = loading)
-                        }
+                        RecipeList(
+                            loading = loading,
+                            recipes = recipes,
+                            onChangeRecipeScrollPosition = viewModel::onChangeCategoryScrollPosition,
+                            page = page,
+                            onTriggerEvent = {
+                                   viewModel.onTriggerEvent(RecipeListEvent.NextPageEvent)
+                            },
+                            navController = findNavController()
+                        )
                     }
 
                 }
@@ -127,60 +112,5 @@ class RecipeListFragment: Fragment() {
 
             }
         }
-    }
-}
-//Example
-@Composable
-fun MyBottomBar(
-
-){
-    BottomNavigation(
-        elevation = 12.dp
-    ) {
-        BottomNavigationItem(icon = {
-            Icon(
-                imageVector = Icons.Default.CheckCircle,
-                contentDescription = ""
-            )
-        },
-            selected = false,
-            onClick = {
-
-            }
-        )
-        BottomNavigationItem(icon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = ""
-            )
-        },
-            selected = true,
-            onClick = {
-
-            }
-        )
-        BottomNavigationItem(icon = {
-            Icon(
-                imageVector = Icons.Default.Favorite,
-                contentDescription = ""
-            )
-        },
-            selected = false,
-            onClick = {
-
-            }
-        )
-    }
-
-}
-//Example
-@Composable
-fun MyDrawer(){
-    Column(){
-        Text("Item1")
-        Text("Item2")
-        Text("Item3")
-        Text("Item4")
-        Text("Item5")
     }
 }
